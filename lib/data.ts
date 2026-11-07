@@ -1,6 +1,7 @@
 export type Produk = { id: number; nama: string; kategori: string; harga: number; stok: number };
 export type StatusPesanan = "Baru" | "Diproses" | "Dikirim" | "Selesai";
-export type Pesanan = { id: string; pelanggan: string; total: number; status: StatusPesanan; tanggal: string };
+export type ItemPesanan = { produkId: number; nama: string; harga: number; qty: number };
+export type Pesanan = { id: string; pelanggan: string; total: number; status: StatusPesanan; tanggal: string; items?: ItemPesanan[] };
 
 export const STOK_MENIPIS = 10;
 export const STATUS: StatusPesanan[] = ["Baru", "Diproses", "Dikirim", "Selesai"];
