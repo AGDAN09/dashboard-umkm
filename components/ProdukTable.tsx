@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocalStorage } from "@/lib/uselocalstorage";
 import { useMemo, useState } from "react";
 import { Minus, Plus, Search, Trash2 } from "lucide-react";
 import { produkAwal, STOK_MENIPIS, type Produk } from "@/lib/data";
@@ -8,7 +9,7 @@ import { rupiah } from "@/lib/format";
 const kosong = { nama: "", kategori: "Makanan", harga: "", stok: "" };
 
 export default function ProdukTable() {
-  const [items, setItems] = useState<Produk[]>(produkAwal);
+  const [items, setItems] = useLocalStorage<Produk[]>("umkm:produk", produkAwal);
   const [cari, setCari] = useState("");
   const [form, setForm] = useState(kosong);
 

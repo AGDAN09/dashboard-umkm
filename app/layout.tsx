@@ -5,7 +5,7 @@ import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta" });
 
-export const metadata: Metadata = { title: "Toko Agdan - Dashboard UMKM" };
+export const metadata: Metadata = { title: "Toko Kita - Dashboard UMKM" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

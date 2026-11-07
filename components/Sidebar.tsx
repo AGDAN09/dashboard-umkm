@@ -16,7 +16,7 @@ export default function Sidebar() {
     <aside className="flex shrink-0 bg-daun text-white md:min-h-screen md:w-60 md:flex-col md:p-5">
       <div className="hidden items-center gap-2 pb-8 md:flex">
         <Store className="h-6 w-6 text-kunyit" />
-        <span className="text-lg font-bold">Toko Agdan</span>
+        <span className="text-lg font-bold">Toko Kita</span>
       </div>
       <nav className="flex w-full justify-around gap-1 p-2 md:flex-col md:justify-start md:p-0">
         {menu.map(({ href, label, icon: Icon }) => {

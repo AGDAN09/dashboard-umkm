@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocalStorage } from "@/lib/uselocalstorage";
 import { useState } from "react";
 import { pesananAwal, STATUS, type Pesanan, type StatusPesanan } from "@/lib/data";
 import { rupiah, tanggal } from "@/lib/format";
@@ -12,7 +13,7 @@ const warna: Record<StatusPesanan, string> = {
 };
 
 export default function PesananTable() {
-  const [items, setItems] = useState<Pesanan[]>(pesananAwal);
+  const [items, setItems] = useLocalStorage<Pesanan[]>("umkm:pesanan", pesananAwal);
   const [filter, setFilter] = useState<StatusPesanan | "Semua">("Semua");
 
   const tampil = filter === "Semua" ? items : items.filter((p) => p.status === filter);
