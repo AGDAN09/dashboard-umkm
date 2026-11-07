@@ -1,16 +1,22 @@
+"use client";
+
 import { AlertTriangle, Package, ShoppingBag, Wallet } from "lucide-react";
-import { pesananAwal, produkAwal, STOK_MENIPIS } from "@/lib/data";
+import { pesananAwal, produkAwal, STOK_MENIPIS, type Pesanan, type Produk } from "@/lib/data";
 import { rupiah, tanggal } from "@/lib/format";
+import { useLocalStorage } from "@/lib/uselocalstorage";
 
 export default function Ringkasan() {
-  const omzet = pesananAwal.filter((p) => p.status === "Selesai").reduce((a, p) => a + p.total, 0);
-  const baru = pesananAwal.filter((p) => p.status === "Baru").length;
-  const menipis = produkAwal.filter((p) => p.stok <= STOK_MENIPIS);
+  const [pesanan] = useLocalStorage<Pesanan[]>("umkm:pesanan", pesananAwal);
+  const [produk] = useLocalStorage<Produk[]>("umkm:produk", produkAwal);
+
+  const omzet = pesanan.filter((p) => p.status === "Selesai").reduce((a, p) => a + p.total, 0);
+  const baru = pesanan.filter((p) => p.status === "Baru").length;
+  const menipis = produk.filter((p) => p.stok <= STOK_MENIPIS);
 
   const stat = [
     { label: "Omzet selesai", nilai: rupiah(omzet), icon: Wallet },
     { label: "Pesanan baru", nilai: String(baru), icon: ShoppingBag },
-    { label: "Total produk", nilai: String(produkAwal.length), icon: Package },
+    { label: "Total produk", nilai: String(produk.length), icon: Package },
     { label: "Stok menipis", nilai: String(menipis.length), icon: AlertTriangle },
   ];
 
@@ -33,7 +39,7 @@ export default function Ringkasan() {
         <section className="rounded-xl border border-tinta/10 bg-white p-5 lg:col-span-3">
           <h2 className="font-semibold">Pesanan terbaru</h2>
           <ul className="mt-3 divide-y divide-tinta/10">
-            {pesananAwal.slice(0, 4).map((p) => (
+            {pesanan.slice(0, 4).map((p) => (
               <li key={p.id} className="flex items-center justify-between py-3 text-sm">
                 <div>
                   <p className="font-medium">{p.pelanggan}</p>
@@ -42,6 +48,9 @@ export default function Ringkasan() {
                 <span className="font-semibold">{rupiah(p.total)}</span>
               </li>
             ))}
+            {pesanan.length === 0 && (
+              <li className="py-6 text-center text-sm text-tinta/60">Belum ada pesanan. Buat pesanan pertama di halaman Pesanan.</li>
+            )}
           </ul>
         </section>
 
@@ -54,6 +63,7 @@ export default function Ringkasan() {
                 <span className="font-semibold">sisa {p.stok}</span>
               </li>
             ))}
+            {menipis.length === 0 && <li className="text-tinta/60">Semua stok aman.</li>}
           </ul>
         </section>
       </div>
