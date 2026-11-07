@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, ShoppingCart, X } from "lucide-react";
+import { MessageCircle, Plus, ShoppingCart, X } from "lucide-react";
 import {
   pesananAwal, produkAwal, STATUS,
   type ItemPesanan, type Pesanan, type Produk, type StatusPesanan,
 } from "@/lib/data";
 import { rupiah, tanggal } from "@/lib/format";
 import { useLocalStorage } from "@/lib/uselocalstorage";
+import { linkNota } from "@/lib/whatsapp";
 
 const warna: Record<StatusPesanan, string> = {
   Baru: "bg-yellow-100 text-yellow-800",
@@ -23,6 +24,7 @@ export default function PesananTable() {
 
   const [buka, setBuka] = useState(false);
   const [pelanggan, setPelanggan] = useState("");
+  const [telepon, setTelepon] = useState("");
   const [pilih, setPilih] = useState("");
   const [qty, setQty] = useState("1");
   const [keranjang, setKeranjang] = useState<ItemPesanan[]>([]);
@@ -57,6 +59,7 @@ export default function PesananTable() {
   const tutup = () => {
     setBuka(false);
     setPelanggan("");
+    setTelepon("");
     setPilih("");
     setQty("1");
     setKeranjang([]);
@@ -70,6 +73,7 @@ export default function PesananTable() {
       {
         id: `INV-${nomor}`,
         pelanggan: pelanggan.trim(),
+        telepon: telepon.trim() || undefined,
         total,
         status: "Baru",
         tanggal: new Date().toLocaleDateString("sv-SE"),
@@ -106,8 +110,12 @@ export default function PesananTable() {
       {buka && (
         <section className="mt-4 rounded-xl border border-kunyit bg-white p-4">
           <h2 className="font-semibold">Pesanan baru</h2>
-          <input className={`${input} mt-3 w-full sm:w-80`} placeholder="Nama pelanggan" value={pelanggan}
-            onChange={(e) => setPelanggan(e.target.value)} aria-label="Nama pelanggan" />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <input className={`${input} w-full sm:w-64`} placeholder="Nama pelanggan" value={pelanggan}
+              onChange={(e) => setPelanggan(e.target.value)} aria-label="Nama pelanggan" />
+            <input className={`${input} w-full sm:w-56`} type="tel" placeholder="No. WhatsApp (opsional)" value={telepon}
+              onChange={(e) => setTelepon(e.target.value)} aria-label="Nomor WhatsApp" />
+          </div>
 
           <div className="mt-3 flex flex-wrap gap-2">
             <select className={`${input} min-w-56`} value={pilih} onChange={(e) => setPilih(e.target.value)} aria-label="Pilih produk">
@@ -161,6 +169,7 @@ export default function PesananTable() {
               <th className="p-3 font-semibold">Pesanan</th>
               <th className="p-3 font-semibold">Total</th>
               <th className="p-3 font-semibold">Status</th>
+              <th className="p-3"><span className="sr-only">Aksi</span></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-tinta/10">
@@ -181,10 +190,17 @@ export default function PesananTable() {
                     {STATUS.map((s) => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </td>
+                <td className="p-3 text-right">
+                  <a href={linkNota(p)} target="_blank" rel="noopener noreferrer"
+                    aria-label={`Kirim nota ${p.id} lewat WhatsApp`}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-green-600 px-3 py-1.5 text-sm font-medium text-green-700 hover:bg-green-50">
+                    <MessageCircle className="h-4 w-4" /> Nota
+                  </a>
+                </td>
               </tr>
             ))}
             {tampil.length === 0 && (
-              <tr><td colSpan={3} className="p-8 text-center text-tinta/60">Tidak ada pesanan dengan status ini.</td></tr>
+              <tr><td colSpan={4} className="p-8 text-center text-tinta/60">Tidak ada pesanan dengan status ini.</td></tr>
             )}
           </tbody>
         </table>
